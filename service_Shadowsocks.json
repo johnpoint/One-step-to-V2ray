@@ -1,0 +1,15 @@
+{
+  "inbound": {
+    "port": ${port},
+    "protocol": "shadowsocks",
+    "settings": {
+      "method": "${method}",
+      "ota": true,
+      "password": "${pw}"
+    }
+  },
+  "outbound": {
+    "protocol": "freedom",  
+    "settings": {}
+  }
+}

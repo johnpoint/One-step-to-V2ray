@@ -1,0 +1,55 @@
+{
+  "log":{
+    "loglevel": "warning",
+    "access": "",
+    "error": ""
+  },
+  "inbound": {
+    "port": 1080,
+    "protocol": "${proxy}",
+    "settings": {
+      "auth": "noauth",
+      "udp": true
+    }
+  },
+  "outbound": {
+    "protocol": "vmess",
+    "settings": {
+      "vnext": [
+        {
+          "address": "${ip}",
+          "port": ${port},  
+          "users": [
+            {
+              "id": "${uuid}",
+              "alterId": 64
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "outboundDetour": [
+    {
+      "protocol": "freedom",
+      "settings": {},
+      "tag": "direct"
+    }
+  ],
+  "routing": {
+    "strategy": "rules",
+    "settings": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "chinasites",
+          "outboundTag": "direct"
+        },
+        {
+          "type": "chinaip",
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  }
+}
