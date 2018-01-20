@@ -4,14 +4,14 @@ export PATH
 
 #=================================================
 #	System Required: Ubuntu 14.04+
-#	Version: 2.2.2
+#	Version: 2.2.3
 #	Blog: johnpoint.github.io
 #	Author: johnpoint
 #    USE AT YOUR OWN RISK!!!
 #    Publish under GNU General Public License v2
 #=================================================
 
-sh_ver="2.2.2"
+sh_ver="2.2.3"
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
@@ -215,6 +215,15 @@ echo "	——————————————————————
 	主要端口：${port}
 	——————————————————————"
  }
+ 
+ Set_uuid(){
+ echo -e "请输入自定义UUID,如需新生成请留空"
+ read uuid
+ [[ -z ${uuid} ]] && uuid=$(cat /proc/sys/kernel/random/uuid) 
+ echo "	——————————————————————
+ 	UUID: ${uuid}
+ 	——————————————————————"
+ }
 
 DynamicPort(){
   read -p "是否启用动态端口?（默认开启） [y/n]:" ifdynamicport 
@@ -389,7 +398,7 @@ fi
  Max_Cool
  Client_proxy
  ip=$( curl ipinfo.io | jq -r '.ip' )
- uuid=$(cat /proc/sys/kernel/random/uuid) 
+ Set_uuid
  Disable_iptables
  User_config
  Save_config
