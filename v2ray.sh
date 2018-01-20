@@ -4,14 +4,14 @@ export PATH
 
 #=================================================
 #	System Required: Ubuntu 14.04+
-#	Version: 2.0.1
+#	Version: 2.1.1
 #	Blog: johnpoint.github.io
 #	Author: johnpoint
 #    USE AT YOUR OWN RISK!!!
 #    Publish under GNU General Public License v2
 #=================================================
 
-sh_ver="2.0.1"
+sh_ver="2.1.1"
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
@@ -117,7 +117,7 @@ service v2ray status
 ########
  
  Set_type(){
- echo "
+ echo -e "
  ${Tip}目前仅完美支持Vmess,其他服务类型可能会出现异常
 请选择服务类型：
 1.Shadowsocks
@@ -702,6 +702,7 @@ echo  -e "v2ray安装/管理脚本 [v${Green_font_prefix}${sh_ver}${Font_color_s
   ${Green_font_prefix}8.${Font_color_suffix} 重启 v2ray 
   ${Green_font_prefix}9.${Font_color_suffix} 查看 v2ray 状态
   ——————————————————————
+  ${Green_font_prefix}00.${Font_color_suffix} 更新 主程序
   ${Green_font_prefix}0.${Font_color_suffix} 更新 脚本
 "
 read mainset
@@ -725,6 +726,8 @@ elif [[ ${mainset} == '9' ]]; then
 	Status
 elif [[ ${mainset} == '0' ]]; then
 	Update_shell
+elif [[ ${mainset} == '00' ]]; then
+	Install_main
 else
 	echo "输入不正确!"
 	exit 0
