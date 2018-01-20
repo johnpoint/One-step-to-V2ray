@@ -5,7 +5,7 @@
 ## 获取&使用 ##
 
 ```
-wget https://github.com/johnpoint/One-step-to-V2ray/raw/master/v2ray.sh && chmod +x v2ray && ./v2ray
+wget https://github.com/johnpoint/One-step-to-V2ray/raw/master/v2ray.sh && chmod +x v2ray.sh && ./v2ray.sh
 ```
 
 ## 功能 ##
