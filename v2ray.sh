@@ -57,7 +57,7 @@ Disable_China(){
  
  Update_shell(){
 	echo -e "当前版本为 [ ${Green_font_prefix}${sh_ver}${Font_color_suffix} ]，开始检测最新版本..."
-	sh_new_ver=$(wget --no-check-certificate -qO- "https://github.com/johnpoint/start-vps-shell/raw/master/shell/v2ray/v2ray.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1)
+	sh_new_ver=$(wget --no-check-certificate -qO- "https://github.com/johnpoint/One-step-to-V2ray/raw/master/v2ray.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1)
 	[[ -z ${sh_new_ver} ]] && echo -e "${Error} 检测最新版本失败 !" && exit 0
 	if [[ ${sh_new_ver} != ${sh_ver} ]]; then
 		echo -e "发现新版本[ ${Green_font_prefix}${sh_new_ver}${Font_color_suffix} ]，是否更新？[y/n]"
@@ -65,7 +65,7 @@ Disable_China(){
 		[[ -z "${yn}" ]] && yn="y"
 		if [[ ${yn} == [yY] ]]; then
 			rm -rf v2ray.sh
-			wget https://github.com/johnpoint/start-vps-shell/raw/master/shell/v2ray/v2ray.sh
+			wget https://github.com/johnpoint/One-step-to-V2ray/raw/master/v2ray.sh
 			echo -e "脚本已更新为最新版本[ ${Green_font_prefix}${sh_new_ver}${Font_color_suffix} ] !"
             chmod +x v2ray.sh
             ./v2ray.sh
