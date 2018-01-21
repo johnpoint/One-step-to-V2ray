@@ -78,6 +78,10 @@ Disable_China(){
 	fi
 }
 
+To_base(){
+rm -rf v2ray-dev.sh
+wget https://github.com/johnpoint/One-step-to-V2ray/raw/master/v2ray-base.sh && chmod +x v2ray-base.sh && ./v2ray-base.sh
+}
 
  Start(){
  echo -e "${Info} 正在开启v2ray"

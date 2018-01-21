@@ -4,14 +4,14 @@ export PATH
 
 #=================================================
 #	System Required: Ubuntu 14.04+
-#	Version: 2.2.14
+#	Version: 2.2.15
 #	Blog: johnpoint.github.io
 #	Author: johnpoint
 #    USE AT YOUR OWN RISK!!!
 #    Publish under GNU General Public License v2
 #=================================================
 
-sh_ver="2.2.14"
+sh_ver="2.2.15"
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
@@ -23,8 +23,8 @@ Disable_China(){
  wget http://iscn.kirito.moe/run.sh 
  bash run.sh 
  if [[ $area == cn ]];then 
- echo "Unable to install in china" 
- exit 
+ 	echo "Unable to install in china" 
+ 	exit 0
  fi 
  }
  
@@ -49,8 +49,8 @@ Disable_China(){
  
  Disable_SELinux(){
  if [ -s /etc/selinux/config ] && grep 'SELINUX=enforcing' /etc/selinux/config; then 
- sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config 
- setenforce 0 
+ 	sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config 
+	 setenforce 0 
  fi 
  }
  
@@ -78,15 +78,20 @@ Disable_China(){
 	fi
 }
 
+To_dev(){
+rm -rf v2ray-base.sh
+wget https://github.com/johnpoint/One-step-to-V2ray/raw/master/v2ray-dev.sh && chmod +x v2ray-dev.sh && ./v2ray-dev.sh
+}
+
 
  Start(){
  echo -e "${Info} 正在开启v2ray"
-service v2ray start 
+ service v2ray start 
 }
 
 Stop(){
  echo -e "${Info} 正在关闭v2ray"
-service v2ray stop
+ service v2ray stop
 }
 
 Restart(){
@@ -95,7 +100,7 @@ Start
 }
 
 Status(){
-service v2ray status
+ service v2ray status
 }
  
  Install_main(){
