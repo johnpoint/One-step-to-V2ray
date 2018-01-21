@@ -15,9 +15,9 @@ wget https://github.com/johnpoint/One-step-to-V2ray/raw/master/v2ray.sh && chmod
 
 ## TODO #
 
-- [ ] 完善socks安装
+- [x] 完善Vmess
+- [x] 完善socks安装
 - [ ] 完善shawdsocks安装
-- [ ] 增加多种工作模式
 - [ ] 提高定制化配置-projectV.sh
 - [ ] 增加shawdsocks加密协议
 
