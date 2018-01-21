@@ -57,18 +57,18 @@ Disable_China(){
  
  Update_shell(){
 	echo -e "当前版本为 [ ${Green_font_prefix}${sh_ver}${Font_color_suffix} ]，开始检测最新版本..."
-	sh_new_ver=$(wget --no-check-certificate -qO- "https://github.com/johnpoint/One-step-to-V2ray/raw/master/v2ray.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1)
+	sh_new_ver=$(wget --no-check-certificate -qO- "https://github.com/johnpoint/One-step-to-V2ray/raw/master/v2ray-base.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1)
 	[[ -z ${sh_new_ver} ]] && echo -e "${Error} 检测最新版本失败 !" && exit 0
 	if [[ ${sh_new_ver} != ${sh_ver} ]]; then
 		echo -e "发现新版本[ ${Green_font_prefix}${sh_new_ver}${Font_color_suffix} ]，是否更新？[y/n]"
 		stty erase '^H' && read -p "(默认: y):" yn
 		[[ -z "${yn}" ]] && yn="y"
 		if [[ ${yn} == [yY] ]]; then
-			rm -rf v2ray.sh
-			wget https://github.com/johnpoint/One-step-to-V2ray/raw/master/v2ray.sh
+			rm -rf v2ray-base.sh
+			wget https://github.com/johnpoint/One-step-to-V2ray/raw/master/v2ray-base.sh
 			echo -e "脚本已更新为最新版本[ ${Green_font_prefix}${sh_new_ver}${Font_color_suffix} ] !"
-            chmod +x v2ray.sh
-            ./v2ray.sh
+            chmod +x v2ray-base.sh
+            ./v2ray-base.sh
             exit
 		else
 			echo && echo "	已取消..." && echo
@@ -742,6 +742,8 @@ echo  -e "v2ray安装/管理脚本 [v${Green_font_prefix}${sh_ver}${Font_color_s
   ${Green_font_prefix}8.${Font_color_suffix} 重启 v2ray 
   ${Green_font_prefix}9.${Font_color_suffix} 查看 v2ray 状态
   ——————————————————————
+  ${Green_font_prefix}10.${Font_color_suffix} 切换 高级版
+  ——————————————————————
   ${Green_font_prefix}00.${Font_color_suffix} 更新 主程序
   ${Green_font_prefix}0.${Font_color_suffix} 更新 脚本
 "
@@ -764,6 +766,8 @@ elif [[ ${mainset} == '8' ]]; then
 	Restart
 elif [[ ${mainset} == '9' ]]; then
 	Status
+elif [[ ${mainset} == '10' ]]; then
+	To_dev
 elif [[ ${mainset} == '0' ]]; then
 	Update_shell
 elif [[ ${mainset} == '00' ]]; then
