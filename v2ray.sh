@@ -4,14 +4,14 @@ export PATH
 
 #=================================================
 #	System Required: Ubuntu 14.04+
-#	Version: 2.2.7
+#	Version: 2.2.8
 #	Blog: johnpoint.github.io
 #	Author: johnpoint
 #    USE AT YOUR OWN RISK!!!
 #    Publish under GNU General Public License v2
 #=================================================
 
-sh_ver="2.2.7"
+sh_ver="2.2.8"
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
@@ -156,10 +156,13 @@ fi
  
  Set_method(){
  echo "选择加密方法
-1.aes-256-cfb
+1.aes-256-cfb(默认)
 2.aes-128-cfb
 3.chacha20
 4.chacha20-ietf
+5.aes-256-gcm
+6.aes-128-gcm
+7.chacha20-poly1305
 "
 read setm
 if [[ ${setm} == '1' ]]; then
@@ -360,7 +363,7 @@ elif [[ ${cauth} == '2' ]]; then
 					{
 						\"user\":\"${username}\",
 						\"pass\":\"${pw}\"
-					},
+					}
 				]
 "
 else

@@ -1,0 +1,29 @@
+{
+  "log": {
+
+},
+  "dns": {
+
+},
+  "routing": {
+
+},
+  "policy": {
+
+},
+  "inbound": {
+
+},
+  "outbound": {
+
+},
+  "inboundDetour": [
+
+],
+  "outboundDetour": [
+
+],
+  "transport": {
+
+}
+}
