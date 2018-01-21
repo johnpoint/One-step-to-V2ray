@@ -1,0 +1,56 @@
+{
+    "log": {
+        "loglevel": "warning", 
+        "access": "", 
+        "error": ""
+    }, 
+    "inbound": {
+        "port": 1080, 
+        "protocol": "${proxy}", 
+        "settings": {
+            "auth": "noauth", 
+            "udp": true
+        }
+    }, 
+    "outbound": {
+        "protocol": "socks", 
+        "settings": {
+            "servers": [
+                {
+                    "address": "127.0.0.1", 
+                    "port": 1234, 
+                    "users": [
+                        {
+                            "user": "test user", 
+                            "pass": "test pass", 
+                            "level": 0
+                        }
+                    ]
+                }
+            ]
+        }
+    }, 
+    "outboundDetour": [
+        {
+            "protocol": "freedom", 
+            "settings": { }, 
+            "tag": "direct"
+        }
+    ], 
+    "routing": {
+        "strategy": "rules", 
+        "settings": {
+            "domainStrategy": "IPIfNonMatch", 
+            "rules": [
+                {
+                    "type": "chinasites", 
+                    "outboundTag": "direct"
+                }, 
+                {
+                    "type": "chinaip", 
+                    "outboundTag": "direct"
+                }
+            ]
+        }
+    }
+}
