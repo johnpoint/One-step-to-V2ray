@@ -102,23 +102,17 @@ Status(){
 service v2ray status
 }
  
- Install_main(){
- cd ~
- echo -e "${Tip} 正在使用官方脚本安装v2ray主程序...."
- bash <(curl -L -s https://install.direct/go.sh)
- echo -e "${Tip} 安装完成~"
- }
- 
- Disable_iptables(){
- iptables -P INPUT ACCEPT 
- iptables -P FORWARD ACCEPT 
- iptables -P OUTPUT ACCEPT 
- iptables -F 
+ Set_iptables(){
+
 }
 
-#########
-#	设置	#
-########
+Get_ip(){
+Ip=$( curl ipinfo.io | jq -r '.ip' )
+}
+
+############
+#	全局设置	#
+###########
  
  Set_type(){
  echo -e "
@@ -149,49 +143,6 @@ else
 	exit 0
 fi
 }
- 
- Set_passwd(){
- echo "设置密码"
- read pw
- echo "	——————————————————————
-	密码：${pw}
-	——————————————————————"
- }
- 
- Set_method(){
- echo "选择加密方法
-1.aes-256-cfb(默认)
-2.aes-128-cfb
-3.chacha20
-4.chacha20-ietf
-5.aes-256-gcm
-6.aes-128-gcm
-7.chacha20-poly1305
-"
-read setm
-[[ -z ${setm} ]] && setm='1'
-if [[ ${setm} == '1' ]]; then
-	method='aes-256-cfb'
-elif [[ ${setm} == '2' ]]; then
-	method='aes-128-cfb'
-elif [[ ${setm} == '3' ]]; then
-	method='chacha20'
-elif [[ ${setm} == '4' ]]; then 
-	method='chacha20-ietf'
-elif [[ ${setm} == '5' ]]; then
-	method='aes-256-gcm'
-elif [[ ${setm} == '6' ]]; then
-	method='aes-128-gcm'
-elif [[ ${setm} == '7' ]]; then
-	method='chacha20-poly1305'
-else
-	echo "请输入正确选项!" 
-	Set_method
-fi
-echo "	——————————————————————
-	加密：${method}
-	——————————————————————"
-} 
 
 Log_lv(){
 echo "请输入日志等级：
@@ -220,6 +171,12 @@ fi
 echo "	——————————————————————
 	日志等级：${loglv}
 	——————————————————————"
+	
+echo "设置日志路径"
+echo "access路径"
+read save_access
+echo "error路径"
+read save_error
 }
 
  Port_main(){
@@ -238,6 +195,11 @@ echo "	——————————————————————
  	UUID: ${uuid}
  	——————————————————————"
  }
+ 
+ 
+ #############
+ #	vmess设置	#
+#############
 
 DynamicPort(){
   read -p "是否启用动态端口?（默认开启） [y/n]:" ifdynamicport 
@@ -300,6 +262,103 @@ detour=',
  fi 
  }
  
+ ##################
+ #	Shadowsocks设置	#
+ ##################
+
+Set_method(){
+ echo "选择加密方法
+1.aes-256-cfb(默认)
+2.aes-128-cfb
+3.chacha20
+4.chacha20-ietf
+5.aes-256-gcm
+6.aes-128-gcm
+7.chacha20-poly1305
+"
+read setm
+[[ -z ${setm} ]] && setm='1'
+if [[ ${setm} == '1' ]]; then
+	method='aes-256-cfb'
+elif [[ ${setm} == '2' ]]; then
+	method='aes-128-cfb'
+elif [[ ${setm} == '3' ]]; then
+	method='chacha20'
+elif [[ ${setm} == '4' ]]; then 
+	method='chacha20-ietf'
+elif [[ ${setm} == '5' ]]; then
+	method='aes-256-gcm'
+elif [[ ${setm} == '6' ]]; then
+	method='aes-128-gcm'
+elif [[ ${setm} == '7' ]]; then
+	method='chacha20-poly1305'
+else
+	echo "请输入正确选项!" 
+	Set_method
+fi
+echo "	——————————————————————
+	加密：${method}
+	——————————————————————"
+}
+
+#############
+#	socks设置	#
+############
+
+Set_auth(){
+ echo "请选择socks协议验证方式
+1.匿名
+2.用户密码
+" 
+read cauth
+if [[ ${cauth} == '1' ]]; then
+	auth='none'
+	authconf="  			\"auth\": \"none\",
+  			\"accounts\": [
+    			{
+      				\"user\": \"\",
+      				\"pass\": \"\"
+    			}
+  			],
+  		\"udp\": false,
+ 		 \"ip\": \"127.0.0.1\",
+  		\"timeout\": 0,
+ 		 \"userLevel\": 0
+		}"
+elif [[ ${cauth} == '2' ]]; then
+	auth='password'
+	echo "输入用户名"
+	read username
+	Set_passwd
+	 echo "	——————————————————————
+	Socks配置：
+	认证方式：${auth}
+	用户名：${username}
+	密码：${pw}
+	——————————————————————"
+	authconf="		\"auth\": \"password\",
+  			\"accounts\": [
+    			{
+      				\"user\": \"${username}\",
+      				\"pass\": \"${uuid}\"
+    			}
+  			],
+  		\"udp\": false,
+ 		 \"ip\": \"127.0.0.1\",
+  		\"timeout\": 0,
+ 		 \"userLevel\": 0
+		}
+"
+else
+	echo -e "${Error} 输入错误，请重试~"
+	Set_auth
+fi
+}
+
+#############
+#	客户端设置	#
+ #############
+ 
  Max_Cool(){
   read -p "是否启用 Mux.Cool?（默认开启） [y/n]:" ifmux 
  [ -z "$ifmux" ] && ifmux='y' 
@@ -343,109 +402,25 @@ ifmux='false'
 	——————————————————————"
  }
  
- Set_config(){
- echo  "请明确知晓，以下填写内容全都必须填写，否则程序有可能启动失败"
-}
- 
- Set_auth(){
- echo "请选择socks协议验证方式
-1.匿名
-2.用户密码
-" 
-read cauth
-if [[ ${cauth} == '1' ]]; then
-	auth='none'
-	authconf="  			\"auth\": \"none\",
-  			\"accounts\": [
-    			{
-      				\"user\": \"\",
-      				\"pass\": \"\"
-    			}
-  			],
-  		\"udp\": false,
- 		 \"ip\": \"127.0.0.1\",
-  		\"timeout\": 0,
- 		 \"userLevel\": 0
-		}"
-elif [[ ${cauth} == '2' ]]; then
-	auth='password'
-	echo "输入用户名"
-	read username
-	Set_passwd
-	 echo "	——————————————————————
-	Socks配置：
-	认证方式：${auth}
-	用户名：${username}
-	密码：${pw}
-	——————————————————————"
-	authconf="		\"auth\": \"password\",
-  			\"accounts\": [
-    			{
-      				\"user\": \"${username}\",
-      				\"pass\": \"${pw}\"
-    			}
-  			],
-  		\"udp\": false,
- 		 \"ip\": \"127.0.0.1\",
-  		\"timeout\": 0,
- 		 \"userLevel\": 0
-		}
-"
-else
-	echo -e "${Error} 输入错误，请重试~"
-	Set_auth
-fi
-}
-
-
- 
  #########
  #	安装	#
  ########
  
+ Install_v2ray(){
+ bash <(curl -L -s https://install.direct/go.sh)
+ Stop
+ }
+ 
  Install_Shadowsocks(){
- Install_main
- Port_main
- Set_passwd
- Set_method
- ip=$( curl ipinfo.io | jq -r '.ip' )
- Set_config_Shadowsocks
- Disable_iptables
- User_Shadowsocks
- Sh_config
- View_config
- Restart
+ 
  }
  
  Install_vmess(){
- Install_main
- Set_config
- Log_lv
- Port_main
- DynamicPort
- Max_Cool
- Client_proxy
- ip=$( curl ipinfo.io | jq -r '.ip' )
- Set_uuid
- Disable_iptables
- User_config
- Save_config
- echo -e "${Info} 安装完成~" 
- Sh_config
- View_config
- Restart
+ 
  }
  
  Install_socks(){
-  ip=$( curl ipinfo.io | jq -r '.ip' )
- Set_auth
- Log_lv
- Port_main
- Disable_iptables
- Save_socks
- Sh_config
- View_config
- Restart
+
  }
  
  Sh_config(){
@@ -461,7 +436,6 @@ echo "
 	\"mux\":\"${ifmux}\",
 	\"proxy\":\"${proxy}\",
 	\"user\":\"${username}\",
-	\"passwd\":\"${pw}\",
 	\"method\":\"${method}\",
 	\"auth\":\"${auth}\",
 	\"uuid\":\"${uuid}\"
@@ -478,7 +452,6 @@ port=$( cat /etc/v2ray/sh_config.json | jq -r '.port' )
 move=$( cat /etc/v2ray/sh_config.json | jq -r '.move' )
 proxy=$( cat /etc/v2ray/sh_config.json | jq -r '.proxy' )
 user=$( cat /etc/v2ray/sh_config.json | jq -r '.user' )
-passwd=$( cat /etc/v2ray/sh_config.json | jq -r '.passwd' )
 method=$( cat /etc/v2ray/sh_config.json | jq -r '.method' )
 auth=$( cat /etc/v2ray/sh_config.json | jq -r '.auth' )
 uuid=$( cat /etc/v2ray/sh_config.json | jq -r '.uuid' )
@@ -492,6 +465,7 @@ ifmux=$( cat /etc/v2ray/sh_config.json | jq -r '.mux' )
 	IP地址：${ip}
 	端口：${port}
 	UUID：${uuid}
+	alterId：${alterld}
 	动态端口：
 		范围：	${move}
 		刷新频率：	${refresh}	分钟
@@ -509,7 +483,7 @@ elif [[ ${shtype} == '1' ]]; then
 	IP地址：${ip}
 	端口：${port}
 	加密方式：${method}
-	密码：${passwd}
+	密码：${uuid}
 	——————————————————————"
 	else
 	echo -e "	——————————————————————
@@ -521,7 +495,7 @@ elif [[ ${shtype} == '1' ]]; then
 	端口：${port}
 	认证方式：${auth}
 	用户名：${user}
-	密码：${passwd}
+	密码：${uuid}
 	——————————————————————"
 	fi
  }
@@ -532,13 +506,15 @@ elif [[ ${shtype} == '1' ]]; then
  if [[ ${yn} == 'y' ]]; then
  systemctl stop v2ray
 systemctl disable v2ray
-
-service v2ray stop
+Stop
 update-rc.d -f v2ray remove
-
+echo -e "${Info}正在删除配置文件"
 rm -rf /etc/v2ray/*
+echo -e "${Info}正在删除主程序"
 rm -rf /usr/bin/v2ray/*
+echo -e "${Info}正在删除日志"
 rm -rf /var/log/v2ray/*
+echo -e "${Info}正在删除服务配置"
 rm -rf /lib/systemd/system/v2ray.service
 rm -rf /etc/init.d/v2ray
 echo -e "${Info}卸载完成~"
@@ -589,7 +565,7 @@ Start
     \"settings\": {
       \"method\": \"${method}\",
       \"ota\": true,
-      \"password\": \"${pw}\"
+      \"password\": \"${uuid}\"
     }
   },
   \"outbound\": {
@@ -618,7 +594,7 @@ echo "{
       \"clients\": [
         {
           \"id\": \"${uuid}\",
-          \"alterId\": 64
+          \"alterId\": ${alterld}
         }
       ]${detour}
     }
@@ -638,7 +614,7 @@ echo -e "${Info}保存配置~"
 echo "
 {
   \"log\":{
-    \"loglevel\": \"warning\",
+    \"loglevel\": \"none\",
     \"access\": \"\",
     \"error\": \"\"
   },
@@ -647,7 +623,7 @@ echo "
     \"protocol\": \"${proxy}\",
     \"settings\": {
       \"auth\": \"noauth\",
-      \"udp\": true
+      \"udp\": ${tfudp}
     }
   },
   \"outbound\": {
@@ -660,7 +636,7 @@ echo "
           \"users\": [
             {
               \"id\": \"${uuid}\",
-              \"alterId\": 64,
+              \"alterId\": ${alterld},
               \"security\": \"auto\"
             }
           ]
@@ -715,8 +691,8 @@ echo "
         {
           \"address\": \"${ip}\", 
           \"method\": \"${method}\",
-          \"ota\": true,
-          \"password\": \"${pw}\",
+          \"ota\": ${otatf},
+          \"password\": \"${uuid}\",
           \"port\": ${port}
         }
       ]
