@@ -23,7 +23,7 @@ wget https://github.com/johnpoint/One-step-to-V2ray/raw/master/v2ray-dev.sh && c
 *目前已经实现的*
 
 | 功能 | 基础版 | 高级版 |
-| : - - - | : - - : | : - - : |
+| ---------- | --- | --- |
 | Vmess | √ | √ |
 | Socks | √ | √ |
 | Shadowsocks | × | × |
